@@ -1,11 +1,21 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import App from '../App'
 import Login from '../page/Login'
 import Register from '../page/Register'
 import Dashboard from '../page/Dashboard'
+import AdminDashboard from '../adminPage/adminDashboard'
+import EmployeeDashboard from '../employeePage/EmployeeDashboard'
+import { AuthContext } from '../context/AuthContext'
+import NotFound from '../page/NotFound'
 
 export default function Route() {
+    let {user} = useContext(AuthContext)
+    let JobSeeker = user?.position.position === "Job Seeker"
+    let Employee = user?.position.position === "Employer"
+    let isAdmin = user?.role.role === "Admin" || user?.role.role === "Super Admin"
+
+    
     let router = createBrowserRouter([
         {
             path : '/',
@@ -13,16 +23,29 @@ export default function Route() {
             children : [
                 {
                     path : '/',
-                    element : <Login/>
+                    element : !user && <Login />
                 },
                 {
                     path : '/register',
-                    element : <Register/>
+                    element : !user &&  <Register/>
                 },
                 {
                     path : '/dashboard',
-                    element : <Dashboard/>
+                    element :( user && JobSeeker) ? <Dashboard/> : <Login/>
+                },
+                {
+                    path : '/employee',
+                    element : (user && Employee) ? <EmployeeDashboard/> : <Login/>
+                },
+                {
+                    path : '/admin',
+                    element : (user && isAdmin) ? <AdminDashboard/> : <Login/> 
+                },
+                {
+                    path : '*',
+                    element : <NotFound/>
                 }
+
             ]
         }
     ])

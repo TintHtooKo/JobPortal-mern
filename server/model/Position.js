@@ -5,6 +5,6 @@ const PositionSchema = new Schema({
         type : String,
         required : true
     }
-},{Timestamps : true})
+},{timestamps : true})
 
 module.exports = mongoose.model('Position',PositionSchema)

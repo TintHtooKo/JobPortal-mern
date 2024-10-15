@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom'
 import 'react-phone-number-input/style.css'
@@ -62,7 +62,13 @@ export default function Register() {
       } else{
         let res = await axios.post('/user/register',data)
         if(res.status == 200){
-          navigate('/dashboard')
+          if(res.data.user?.role.role === "Admin" || res.data.user?.role.role === "Super Admin"){
+            navigate('/admin')
+          }else if(res.data.user?.position.position === "Employer"){
+            navigate('/employee')
+          }else{
+            navigate('/dashboard')
+          }
         }
       }
 

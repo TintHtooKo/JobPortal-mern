@@ -29,7 +29,7 @@ const userController = {
 
             let user = await User.create({fullname,email,phone,password:hashPassword,role,position})
             let token = createToken(user._id)
-
+            user = await User.findById(user._id).populate('role').populate('position');
             let maxAge =  24 * 60 * 60
             res.cookie('jwt',token,{httpOnly : true, maxAge:maxAge * 1000})
             return res.status(200).json({user,token})
@@ -51,6 +51,7 @@ const userController = {
                 return res.status(400).json({message : 'Password does not match'})
             }
             let token = createToken(user._id)
+            user = await User.findById(user._id).populate('role').populate('position');
             let maxAge =  24 * 60 * 60
             res.cookie('jwt',token,{httpOnly : true, maxAge:maxAge * 1000})
             return res.status(200).json({user,token})
@@ -61,7 +62,7 @@ const userController = {
 
     logout : async(req,res) =>{
         try {
-            res.cookie('jwt','',{maxAge : 1})
+            res.cookie('jwt','',{maxAge:1})
             return res.status(200).json({message : 'Logout success'})
         } catch (error) {
             return res.status(500).json({message : error.message})
@@ -79,6 +80,10 @@ const userController = {
         } catch (error) {
             return
         }
+    },
+
+    me : async(req,res) =>{   
+        return res.json(req.user)
     }
 
 

@@ -7,5 +7,6 @@ router.post('/register',userController.register)
 router.post('/login',userController.login)
 router.post('/logout',userController.logout)
 router.get('',AuthMiddleware,userController.userList)
+router.get('/me',AuthMiddleware,userController.me)
 
 module.exports = router

@@ -23,6 +23,9 @@ app.use(cors({
 app.use(express.static('public'))
 app.use(express.json())
 app.use(cookieParser())
+app.get('',(req,res)=>{
+    res.status(200).json({message : 'Server is good'})
+})
 app.use('/user',UserRoute)
 app.use('/position',PositionRoute)
 app.use('/role',RoleRoute)

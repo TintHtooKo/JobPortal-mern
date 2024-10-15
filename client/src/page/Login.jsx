@@ -1,8 +1,10 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import ButtonSpinner from '../assets/button-spinner.svg'
 import { toast, ToastContainer } from 'react-toastify';
 import axios from '../helper/axios';
+import { AuthContext } from '../context/AuthContext';
+
 
 export default function Login() {
   let [email,setEmail] = useState('');
@@ -10,7 +12,7 @@ export default function Login() {
   let [passwordVisible, setPasswordVisible] = useState(false);
   let [loading,setLoading] = useState(false);
   let navigate = useNavigate();
-
+  let {user,dispatch} = useContext(AuthContext)
   let togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
   };
@@ -32,7 +34,14 @@ export default function Login() {
       }else{
         let res = await axios.post('/user/login',data);
         if(res.status == 200){
-          navigate('/dashboard');
+          dispatch({type:'LOGIN',payload:res.data.user})
+          if(res.data.user?.role.role === "Admin" || res.data.user?.role.role === "Super Admin"){
+            navigate('/admin')
+          }else if(res.data.user?.position.position === "Employer"){
+            navigate('/employee')
+          }else{
+            navigate('/dashboard')
+          }
         }
       }
     } catch (error) {
