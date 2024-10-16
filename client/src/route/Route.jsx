@@ -8,6 +8,7 @@ import AdminDashboard from '../adminPage/adminDashboard'
 import EmployeeDashboard from '../employeePage/EmployeeDashboard'
 import { AuthContext } from '../context/AuthContext'
 import NotFound from '../page/NotFound'
+import UserProfile from '../page/UserProfile'
 
 export default function Route() {
     let {user} = useContext(AuthContext)
@@ -23,7 +24,7 @@ export default function Route() {
             children : [
                 {
                     path : '/',
-                    element : !user && <Login />
+                    element : !user ? <Login /> : isAdmin ? <AdminDashboard /> : Employee ? <EmployeeDashboard /> : <Dashboard />
                 },
                 {
                     path : '/register',
@@ -32,6 +33,10 @@ export default function Route() {
                 {
                     path : '/dashboard',
                     element :( user && JobSeeker) ? <Dashboard/> : <Login/>
+                },
+                {
+                    path : '/user/profile',
+                    element : (user && JobSeeker) ? <UserProfile/> : <Login/>
                 },
                 {
                     path : '/employee',

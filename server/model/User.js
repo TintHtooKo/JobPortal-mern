@@ -46,9 +46,36 @@ const UserSchema = new Schema({
     skills : {
         type : Array,
         default : null
+    },
+    address : {
+        type : String,
+        default : null
+    },
+    degree : {
+        type : Array,
+        default : null
+    },
+    job_preference : {
+        type : Array,
+        default : null
+    },
+    experience : {
+        type : Schema.Types.ObjectId,
+        ref : 'Experience',
+        default : null
+    },
+    linkedin : {
+        type : String,
+        default : null
+    },
+    github : {
+        type : String,
+        default : null
+    },
+    portfolio : {
+        type : String,
+        default : null
     }
-
-
 },{timestamps : true})
 
 module.exports = mongoose.model('User',UserSchema)

@@ -60,8 +60,8 @@ export default function Login() {
     <>
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-md">
-        <h1 className="text-2xl font-bold text-center mb-6">Login</h1>
-        <form action="" onSubmit={handleLogin}>
+        <h1 className="text-2xl font-bold text-center mb-6 ">Login</h1>
+        <form action="" onSubmit={handleLogin} className=''>
           <div className="mb-4">
             <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
             <input 
@@ -81,7 +81,7 @@ export default function Login() {
               value={password}
               onChange={(e)=>setPassword(e.target.value)}
               placeholder="*********" 
-              className="mt-1 w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="mt-1  w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             <button 
               type="button" 
@@ -99,12 +99,12 @@ export default function Login() {
               type="submit" 
               className="w-full flex items-center justify-center gap-5 bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition"
             >
-              {loading && <img src={ButtonSpinner}  alt="" />} Login
+              {loading && <img src={ButtonSpinner} className=' bg-transparent'  alt="" />} Login
             </button>
           </div>
         </form>
         <div className="mt-6">
-            <span className='text-sm text-gray-600'>Do you have an account? <Link to={'/register'} className='text-sm text-blue-600 underline'>Register</Link></span>
+            <span className='text-sm text-gray-600'>Do you have an account? <Link to={'/register'} className='text-sm bg-white text-blue-600 underline'>Register</Link></span>
           </div>
       </div>
     </div>

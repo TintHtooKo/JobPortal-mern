@@ -8,5 +8,6 @@ router.post('/login',userController.login)
 router.post('/logout',userController.logout)
 router.get('',AuthMiddleware,userController.userList)
 router.get('/me',AuthMiddleware,userController.me)
+router.patch('/edit',AuthMiddleware,userController.userEdit)
 
 module.exports = router

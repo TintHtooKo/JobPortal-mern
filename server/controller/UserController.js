@@ -69,7 +69,7 @@ const userController = {
         }
     },
 
-    userList : async(req,res) =>{
+    userList : async(req,res) =>{ 
         try {
             let currentUser = req.user
             if(currentUser.role.role !== 'Admin' && currentUser.role.role !== 'Super Admin'){
@@ -78,7 +78,22 @@ const userController = {
             let user = await User.find().populate('role').populate('position')
             return res.status(200).json({user})
         } catch (error) {
-            return
+            return res.status(500).json({message : error.message})
+        }
+    },
+
+    userEdit : async(req,res) =>{
+        try {
+            let currentUser = req.user
+            let {fullname,email,phone,role,position,skills,degree,address,linkedin,github,portfolio,job_preference,bio,about} = req.body
+            let editUser = await User.findByIdAndUpdate(currentUser._id,
+                                {
+                                    fullname,email,phone,role,position,skills,degree,address,linkedin,
+                                    github,portfolio,job_preference,bio,about
+                                },{new : true}).populate('role').populate('position')
+            return res.status(200).json({message:"Edit User Success"})
+        } catch (error) {
+            return res.status(500).json({message : error.message})
         }
     },
 

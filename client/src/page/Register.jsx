@@ -6,6 +6,7 @@ import PhoneInput from 'react-phone-number-input'
 import {ToastContainer,toast} from 'react-toastify'
 import axios from '../helper/axios'
 import ButtonSpinner from '../assets/button-spinner.svg'
+import { AuthContext } from '../context/AuthContext';
 
 export default function Register() {
   let [fullname,setFullname] = useState('')
@@ -19,6 +20,7 @@ export default function Register() {
   let [existPosition,setExistPosition] = useState([])
   let [loading,setLoading] = useState(false)
   let navigate = useNavigate()
+  let {dispatch} = useContext(AuthContext)
 
   let togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
@@ -62,6 +64,7 @@ export default function Register() {
       } else{
         let res = await axios.post('/user/register',data)
         if(res.status == 200){
+          dispatch({type:'LOGIN',payload:res.data.user})
           if(res.data.user?.role.role === "Admin" || res.data.user?.role.role === "Super Admin"){
             navigate('/admin')
           }else if(res.data.user?.position.position === "Employer"){
@@ -91,10 +94,10 @@ export default function Register() {
     <>
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-md">
-        <h1 className="text-2xl font-bold text-center mb-6">Register</h1>
-        <form action="" onSubmit={HandleRegister}>
-        <div className="mb-4">
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700">Full Name</label>
+        <h1 className="text-2xl font-bold text-center bg-white mb-6">Register</h1>
+        <form action="" onSubmit={HandleRegister} className=' bg-white'>
+        <div className="mb-4 bg-white">
+            <label htmlFor="name" className="block text-sm bg-white font-medium text-gray-700">Full Name</label>
             <input 
               type="text" 
               id="name"
@@ -105,8 +108,8 @@ export default function Register() {
             />
           </div>
 
-          <div className="mb-4">
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
+          <div className="mb-4 bg-white">
+            <label htmlFor="email" className="block bg-white text-sm font-medium text-gray-700">Email</label>
             <input 
               type="email" 
               id="email" 
@@ -117,8 +120,8 @@ export default function Register() {
             />
           </div>
 
-          <div className="mb-4">
-            <label htmlFor="" className="block mb-1 text-sm font-medium text-gray-700">Who are you?</label>
+          <div className="mb-4 bg-white">
+            <label htmlFor="" className="block bg-white mb-1 text-sm font-medium text-gray-700">Who are you?</label>
             <select 
             value={position}
             onChange={(e)=>setPosition(e.target.value)}
@@ -134,8 +137,8 @@ export default function Register() {
             </select>
           </div>
 
-          <div className="mb-4">
-            <label htmlFor="phone" className="block text-sm font-medium text-gray-700">Phone</label>
+          <div className="mb-4 bg-white">
+            <label htmlFor="phone" className="block bg-white text-sm font-medium text-gray-700">Phone</label>
             <PhoneInput 
             className='mt-1 w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
             international
@@ -144,8 +147,8 @@ export default function Register() {
             onChange={setPhone}/>
           </div>
 
-          <div className="mb-4 relative">
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
+          <div className="mb-4 relative bg-white">
+            <label htmlFor="password" className="block bg-white text-sm font-medium text-gray-700">Password</label>
             <input 
               type={passwordVisible ? 'text' : 'password'} 
               id="password" 
@@ -163,8 +166,8 @@ export default function Register() {
             </button>
           </div>
 
-          <div className="mb-6 relative">
-            <label htmlFor="confirmpassword" className="block text-sm font-medium text-gray-700">Confirm Password</label>
+          <div className="mb-6 relative bg-white">
+            <label htmlFor="confirmpassword" className="block bg-white text-sm font-medium text-gray-700">Confirm Password</label>
             <input 
               type={cpasswordVisible ? 'text' : 'password'}
               value={confirmpassword}
@@ -187,12 +190,12 @@ export default function Register() {
               type="submit" 
               className="w-full flex items-center justify-center gap-5 bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition"
             >
-              {loading && <img src={ButtonSpinner}  alt="" />} Register
+              {loading && <img src={ButtonSpinner} className=' bg-transparent'  alt="" />} Register
             </button>
           </div>
         </form>
-        <div className="mt-6">
-            <span className='text-sm text-gray-600'>Have you already registered? <Link to={'/'} className='text-sm text-blue-600 underline'>Login</Link></span>
+        <div className="mt-6 bg-white">
+            <span className='text-sm bg-white text-gray-600'>Have you already registered? <Link to={'/'} className='text-sm bg-white text-blue-600 underline'>Login</Link></span>
           </div>
       </div>
     </div>
