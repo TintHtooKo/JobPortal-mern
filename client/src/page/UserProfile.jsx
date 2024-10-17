@@ -27,7 +27,7 @@ export default function UserProfile() {
           <i className="fa-solid fa-envelope text-[20px]"></i> {user.email}
         </p>
         <p className="flex items-start gap-5 text-gray-700">
-          <i className="fa-solid fa-phone text-[20px]"></i> {user.phone}
+          <i className="fa-solid fa-phone text-[20px]"></i> +{user.phone}
         </p>
         <p className="flex items-start gap-5 text-gray-700">
           <i className="fa-solid fa-map text-[20px]"></i> {user.address ? user.address : '-------'}
@@ -36,25 +36,99 @@ export default function UserProfile() {
           <i className="fa-solid fa-user-graduate text-[24px]"></i> {user.degree ? user.degree : '-------'}
         </p>
         <p className="flex items-start gap-5 text-gray-700">
-          <i className="fa-solid mt-1 fa-trophy text-[20px]"></i> {user.skills ? user.skills : '-------'}
+          <i className="fa-solid mt-1 fa-trophy text-[20px]"></i> 
+          {user.skills ? 
+            (Array.isArray(user.skills) 
+              ? user.skills.join(', ') // If it's an array, join with ", "
+              : user.skills.replace(/,/g, ', ') // If it's a string, replace commas with ", "
+            )
+            : '-------'}
         </p>
+        <p className="flex items-start gap-5 text-gray-700">
+          <i className="fa-solid fa-briefcase text-[24px]"></i> 
+          {user.job_preference ? 
+            (Array.isArray(user.job_preference) 
+              ? user.job_preference.join(', ') // If it's an array, join with ", "
+              : user.job_preference.replace(/,/g, ', ') // If it's a string, replace commas with ", "
+            )
+            : '-------'}
+        </p>
+
         <p className="flex items-start gap-5 text-gray-700">
           <i className="fa-brands fa-linkedin text-[24px]"></i> 
-          <Link to={user.linkedin} className='text-blue-500 hover:text-blue-600'>{user.linkedin ? 'LinkedIn' : <span className=' text-gray-700'>-------</span>}</Link>
+          {user.linkedin ? (
+            <Link
+              onClick={(e) => {
+                e.preventDefault();
+                window.open(user.linkedin, '_blank', 'noopener,noreferrer');
+              }}
+              to={user.linkedin} 
+              className="text-blue-500 hover:text-blue-600"
+            >
+              LinkedIn
+            </Link>
+          ) : (
+            <span className="text-gray-700">-------</span>
+          )}
         </p>
+
         <p className="flex items-start gap-5 text-gray-700">
           <i className="fa-brands fa-github text-[24px]"></i> 
-          <Link to={user.github} className='text-blue-500 hover:text-blue-600'>{user.github ? 'Github' : <span className=' text-gray-700'>-------</span>}</Link>
+          {user.github ? (
+            <Link
+              onClick={(e) => {
+                e.preventDefault();
+                window.open(user.github, '_blank', 'noopener,noreferrer');
+              }}
+              to={user.github} 
+              className="text-blue-500 hover:text-blue-600"
+            >
+              Github
+            </Link>
+          ) : (
+            <span className="text-gray-700">-------</span>
+          )}
         </p>
+
         <p className="flex items-start gap-5 text-gray-700">
           <i className="fa-brands fa-chrome text-[24px]"></i> 
-          <Link to={user.portfolio} className='text-blue-500 hover:text-blue-600'>{user.portfolio ? 'Personal Website' : <span className=' text-gray-700'>-------</span>}</Link>
+          {user.portfolio ? (
+            <Link
+              onClick={(e) => {
+                e.preventDefault();
+                window.open(user.portfolio, '_blank', 'noopener,noreferrer');
+              }}
+              to={user.portfolio} 
+              className="text-blue-500 hover:text-blue-600"
+            >
+              Personal Website
+            </Link>
+          ) : (
+            <span className="text-gray-700">-------</span>
+          )}
         </p>
-        <p className="flex items-start gap-5 text-gray-700">
-          <i className="fa-solid fa-file text-[24px]"></i> 
-          <Link to={user.cv} className='text-blue-500 ms-[7px] hover:text-blue-600'>{user.cv ? 'Resume' : <span className=' text-gray-700'>-------</span>}</Link>
-        </p>
-        <Link className='bg-blue-500 w-full sm:w-[110px] hover:bg-blue-600 text-white py-2 px-4 rounded text-center'>Edit Profile</Link>
+
+        <div className=" flex gap-3">
+          <p className="flex items-start gap-5 text-gray-700">
+            <i className="fa-solid fa-file text-[24px]"></i> 
+            {user.cv ? (
+            <Link
+            onClick={(e) => {
+              e.preventDefault();
+              window.open(import.meta.env.VITE_BACKEND_URL_ACCESS + '/cv' + user.cv, '_blank', 'noopener,noreferrer');
+            }} 
+            to={import.meta.env.VITE_BACKEND_URL_ACCESS + '/cv' + user.cv} className='text-blue-500 ms-[7px] hover:text-blue-600'>
+              Resume
+            </Link>
+          ) : (
+            <span className="text-gray-700">-------</span>
+          )}
+            
+          </p>
+          <Link to={'/user/cv/edit'} className='bg-blue-500 p-[3px] rounded text-white hover:bg-blue-600'><i className='fa-solid fa-pen'></i></Link>
+        </div>
+        
+        <Link to={'/user/profile/edit'} className='bg-blue-500 w-full sm:w-[110px] hover:bg-blue-600 text-white py-2 px-4 rounded text-center'>Edit Profile</Link>
       </div>       
       </div>
       {/* Profile end */}

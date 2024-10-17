@@ -52,7 +52,7 @@ const UserSchema = new Schema({
         default : null
     },
     degree : {
-        type : Array,
+        type : String,
         default : null
     },
     job_preference : {

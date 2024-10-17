@@ -9,6 +9,11 @@ import EmployeeDashboard from '../employeePage/EmployeeDashboard'
 import { AuthContext } from '../context/AuthContext'
 import NotFound from '../page/NotFound'
 import UserProfile from '../page/UserProfile'
+import EditUserProfile from '../components/userComponent/profile/EditUserProfile'
+import EditResume from '../components/userComponent/profile/EditResume'
+import UserSetting from '../page/UserSetting'
+import ChangeEmail from '../components/userComponent/settings/ChangeEmail'
+import ChangePassword from '../components/userComponent/settings/ChangePassword'
 
 export default function Route() {
     let {user} = useContext(AuthContext)
@@ -37,6 +42,26 @@ export default function Route() {
                 {
                     path : '/user/profile',
                     element : (user && JobSeeker) ? <UserProfile/> : <Login/>
+                },
+                {
+                    path : 'user/profile/edit',
+                    element : (user && JobSeeker) ? <EditUserProfile/> : <Login/>
+                },
+                {
+                    path : '/user/cv/edit',
+                    element : (user && JobSeeker) ? <EditResume/> : <Login/>
+                },
+                {
+                    path : '/user/setting',
+                    element : (user && JobSeeker) ? <UserSetting/> : <Login/>
+                },
+                {
+                    path : '/user/setting/changemail',
+                    element : (user && JobSeeker) ? <ChangeEmail/> : <Login/>
+                },
+                {
+                    path : '/user/setting/changepw',
+                    element : (user && JobSeeker) ? <ChangePassword/> : <Login/>
                 },
                 {
                     path : '/employee',

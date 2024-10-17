@@ -31,7 +31,7 @@ export default function UserNav() {
     <>
       <div className="flex items-center justify-between mx-5 ">
         <div>
-          <Link to={'/dashboard'}><img src={Logo} className="cursor-pointer w-[70px] sm:w-[80px] lg:w-[100px]" alt="Logo" /></Link>
+          <Link to={'/dashboard'}><img onClick={()=>setOpen(false)} src={Logo} className="cursor-pointer w-[70px] sm:w-[80px] lg:w-[100px]" alt="Logo" /></Link>
         </div>
         <div className="flex items-center gap-3 sm:gap-5">
           <div className="relative">
@@ -69,7 +69,7 @@ export default function UserNav() {
               </Link>
 
               <Link
-                to="/user/profile"
+                to="/user/setting"
                 className=" flex gap-3 items-center mb-2 px-4 py-2 bg-white text-sm lg:text-base hover:bg-gray-100 transition-colors duration-200"
                 onClick={() => setOpen(false)} 
               >

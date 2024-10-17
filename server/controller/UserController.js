@@ -2,6 +2,9 @@ const User = require('../model/User')
 const Role = require('../model/Role')
 const bcrypt = require('bcrypt')
 const createToken = require('../token/createToken')
+const removeFile = require('../helper/removeFile')
+
+
 
 const userController = {
     register : async(req,res) =>{
@@ -82,13 +85,13 @@ const userController = {
         }
     },
 
-    userEdit : async(req,res) =>{
+    userEdit : async(req,res) =>{ 
         try {
             let currentUser = req.user
-            let {fullname,email,phone,role,position,skills,degree,address,linkedin,github,portfolio,job_preference,bio,about} = req.body
+            let {fullname,phone,role,position,skills,degree,address,linkedin,github,portfolio,job_preference,bio,about} = req.body
             let editUser = await User.findByIdAndUpdate(currentUser._id,
                                 {
-                                    fullname,email,phone,role,position,skills,degree,address,linkedin,
+                                    fullname,phone,role,position,skills,degree,address,linkedin,
                                     github,portfolio,job_preference,bio,about
                                 },{new : true}).populate('role').populate('position')
             return res.status(200).json({message:"Edit User Success"})
@@ -99,6 +102,80 @@ const userController = {
 
     me : async(req,res) =>{   
         return res.json(req.user)
+    },
+
+    uploadCv : async(req,res)=>{
+        try {
+            let currentUser = req.user
+            let user = await User.findById(currentUser._id)
+            let cv = {cv : '/' + req.file.filename}
+            let data = await User.findByIdAndUpdate(currentUser._id,cv,{new : true})   
+            await removeFile(__dirname + '/../public/cv/' + user.cv)
+            return res.status(200).json({message : 'Upload CV success'})
+        } catch (error) {
+            return res.status(500).json({message : error.message})
+        }
+    },
+
+    changeEmail : async(req,res) =>{
+        try {
+            let currentUser = req.user
+            let {email} = req.body
+            let emailExist = await User.findOne({email})
+            if(emailExist){
+                return res.status(400).json({message : 'Email already exist'})
+            }
+            let user = await User.findById(currentUser._id)
+            if(!user){
+                return res.status(400).json({message : 'User not found'})
+            }
+            user.email = email
+            user = await User.findByIdAndUpdate(currentUser._id,user,{new : true})
+            return res.status(200).json({message : 'Change email success'})
+        } catch (error) {
+            return res.status(500).json({message : error.message})
+        }
+    },
+
+    changePassword : async(req,res) =>{
+        try {
+            let currentUser = req.user
+            let {oldPassword,newPassword} = req.body
+            let user = await User.findById(currentUser._id)
+            let checkPassword = await bcrypt.compare(oldPassword,user.password)
+            if(!checkPassword){
+                return res.status(400).json({message : 'Old password does not match'})
+            }
+            let salt = await bcrypt.genSalt(10)
+            let hashPassword = await bcrypt.hash(newPassword,salt)
+            user.password = hashPassword
+            await user.save()
+            return res.status(200).json({message : 'Change password success'})
+        } catch (error) {
+            return res.status(500).json({message : error.message})
+        }
+    } ,
+
+    userDelete : async(req,res)=>{
+        try {
+            let currentUser = req.user
+            if(!currentUser || currentUser.role.role !== 'Super Admin'){
+                return res.status(400).json({message : 'You don\'t have permission'})
+            }
+            let id = req.params.id
+            if(!mongoose.Types.ObjectId.isValid(id)){
+                return res.status(400).json({message : 'Invalid ID'})
+            }
+            let user = await User.findById(id)
+            if(!user){
+                return res.status(400).json({message : 'User not found'})
+            }
+            user = await User.findByIdAndDelete(id)
+            await removeFile(__dirname + '/../public/cv/' + user.cv)
+            return res.status(200).json({message : 'Delete user success'})
+        } catch (error) {
+            return res.status(500).json({message : error.message})
+        }
     }
 
 
