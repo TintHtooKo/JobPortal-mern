@@ -6,6 +6,8 @@ import 'react-phone-number-input/style.css'
 import { AuthContext } from '../../../context/AuthContext'
 import axios from '../../../helper/axios'
 import { Link, useNavigate } from 'react-router-dom'
+import Select from 'react-select'
+import { Country, State, City } from 'country-state-city'
 
 export default function EditUserProfile() {
     let {dispatch} = useContext(AuthContext)
@@ -22,7 +24,33 @@ export default function EditUserProfile() {
     let [phone,setPhone] = useState('')
     let [skills,setSkills] = useState([])
     let [newSkill,setNewSkill] = useState('')
+    let [selectedCountry, setSelectedCountry] = useState('');
+    let [selectedState, setSelectedState] = useState('');
+    let [selectedCity, setSelectedCity] = useState('');
     let navigate = useNavigate()
+
+
+    // Get country options
+  const countryOptions = Country.getAllCountries().map((country) => ({
+    value: country.isoCode,
+    label: country.name
+  }));
+
+  // Get state options based on the selected country
+  const stateOptions = selectedCountry
+    ? State.getStatesOfCountry(selectedCountry.value).map((state) => ({
+        value: state.isoCode,
+        label: state.name
+      }))
+    : [];
+
+  // Get city options based on the selected state
+  const cityOptions = selectedState
+    ? City.getCitiesOfState(selectedCountry.value, selectedState.value).map((city) => ({
+        value: city.name,
+        label: city.name
+      }))
+    : [];
 
     useEffect(()=>{
         let fetchUser = async() => {
@@ -39,15 +67,25 @@ export default function EditUserProfile() {
                 setJobPreference(res.data.job_preference || '')
                 setPhone(String('+'+res.data.phone))
                 setSkills(res.data.skills)
+                setSelectedCountry(res.data.country)
+                setSelectedState(res.data.state)
+                setSelectedCity(res.data.city)
             }
         }
         fetchUser()
     },[])
 
-    let addSkills = () =>{
-        setSkills([...skills,newSkill])
-        setNewSkill('')
-    }
+    let addSkills = () => {
+        setSkills((prevSkills) => {
+            if (Array.isArray(prevSkills)) {
+                return [...prevSkills, newSkill];  // Spread the previous array and add the new skill
+            } else {
+                return [newSkill];  // Ensure prevSkills is treated as an array
+            }
+        });
+        setNewSkill(''); // Reset the input field after adding
+    };
+    
 
     let removeSkill = (indexToRemove) => {
         setSkills(skills.filter((_, index) => index !== indexToRemove));
@@ -81,9 +119,10 @@ export default function EditUserProfile() {
                 }else{
                     let data = {
                                 fullname,bio,about,address,degree,linkedin,
-                                github,portfolio,job_preference:jobPreference,phone,skills
+                                github,portfolio,job_preference:jobPreference,phone,skills,
+                                country:selectedCountry.label, state:selectedState.label, city:selectedCity.label
                                 }
-
+                    // console.log(data)
                     let editProfile = await axios.patch('user/edit',data)
 
                     if(editProfile.status == 200){
@@ -93,7 +132,7 @@ export default function EditUserProfile() {
                             payload : {
                                 fullname,bio,about,address,degree,linkedin,
                                 github,portfolio,job_preference:jobPreference,phone,skills,
-                              
+                                country:selectedCountry.label, state:selectedState.label, city:selectedCity.label
                             }
                         })
                         navigate('/user/profile')
@@ -115,6 +154,9 @@ export default function EditUserProfile() {
             })
         }
     }
+
+
+
 
       
       
@@ -157,6 +199,40 @@ export default function EditUserProfile() {
                 className="mt-1 w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 ></textarea>
             </div>
+
+
+            <div className=" mb-4 bg-white">
+                <label htmlFor="" className="block text-sm bg-white font-medium text-gray-700">Country</label>
+                <Select
+                    placeholder="Select Country"
+                    value={selectedCountry}
+                    onChange={setSelectedCountry}
+                    options={countryOptions}
+                />
+            </div>
+
+            <div className=" mb-4 bg-white">
+                <label htmlFor="" className="block text-sm bg-white font-medium text-gray-700">State</label>
+                <Select
+                    placeholder="Select State"
+                    value={selectedState}
+                    onChange={setSelectedState}
+                    options={stateOptions}
+                    isDisabled={!selectedCountry} // Disabled until country is selected
+                />
+            </div>
+
+            <div className="mb-4 bg-white">
+            <label htmlFor="" className="block text-sm bg-white font-medium text-gray-700">City</label>
+                <Select
+                    placeholder="Select City"
+                    value={selectedCity}
+                    onChange={setSelectedCity}
+                    options={cityOptions}
+                    isDisabled={!selectedState} // Disabled until state is selected
+                />
+            </div>
+
             
             <div className="mb-4 bg-white">
                 <label htmlFor="address" className="block text-sm bg-white font-medium text-gray-700">Address</label>
@@ -250,7 +326,7 @@ export default function EditUserProfile() {
             </div>
 
             <div className="mb-4">
-                {!!skills.length && (
+                {!!skills?.length && (
                     <div className="flex flex-wrap gap-2 my-2">
                     {skills.map((skill, index) => (
                         <div className="flex items-center bg-blue-500 p-1 text-white rounded-md" key={index}>

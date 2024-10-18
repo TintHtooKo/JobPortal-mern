@@ -3,6 +3,7 @@ const Role = require('../model/Role')
 const bcrypt = require('bcrypt')
 const createToken = require('../token/createToken')
 const removeFile = require('../helper/removeFile')
+const mongoose = require('mongoose')
 
 
 
@@ -88,11 +89,11 @@ const userController = {
     userEdit : async(req,res) =>{ 
         try {
             let currentUser = req.user
-            let {fullname,phone,role,position,skills,degree,address,linkedin,github,portfolio,job_preference,bio,about} = req.body
+            let {fullname,phone,role,position,skills,degree,address,linkedin,github,portfolio,job_preference,bio,about,country,state,city} = req.body
             let editUser = await User.findByIdAndUpdate(currentUser._id,
                                 {
                                     fullname,phone,role,position,skills,degree,address,linkedin,
-                                    github,portfolio,job_preference,bio,about
+                                    github,portfolio,job_preference,bio,about,country,state,city
                                 },{new : true}).populate('role').populate('position')
             return res.status(200).json({message:"Edit User Success"})
         } catch (error) {
@@ -159,7 +160,7 @@ const userController = {
     userDelete : async(req,res)=>{
         try {
             let currentUser = req.user
-            if(!currentUser || currentUser.role.role !== 'Super Admin'){
+            if(!currentUser && currentUser.role.role !== 'Super Admin'){
                 return res.status(400).json({message : 'You don\'t have permission'})
             }
             let id = req.params.id

@@ -23,19 +23,23 @@ export default function UserProfile() {
       </div>
 
       <div className="mt-10 flex flex-col gap-4 w-full sm:w-[400px]">
-        <p className="flex items-start gap-5 text-gray-700">
+        <p className="flex items-center gap-5 text-gray-700">
           <i className="fa-solid fa-envelope text-[20px]"></i> {user.email}
         </p>
-        <p className="flex items-start gap-5 text-gray-700">
+        <p className="flex items-center gap-5 text-gray-700">
           <i className="fa-solid fa-phone text-[20px]"></i> +{user.phone}
         </p>
-        <p className="flex items-start gap-5 text-gray-700">
-          <i className="fa-solid fa-map text-[20px]"></i> {user.address ? user.address : '-------'}
+        <p className="flex items-center gap-5 text-gray-700">
+          <i className="fa-solid fa-location-dot text-[20px]"></i> 
+          {user.address ? user.address : '-------'}, {' '}
+          {user.city ? user.city : '-------'},{' '}
+          {user.state ? user.state : '-------'},{' '}
+          {user.country ? user.country : '-------'}
         </p>
-        <p className="flex items-start gap-5 text-gray-700">
+        <p className="flex items-center gap-5 text-gray-700">
           <i className="fa-solid fa-user-graduate text-[24px]"></i> {user.degree ? user.degree : '-------'}
         </p>
-        <p className="flex items-start gap-5 text-gray-700">
+        <p className="flex items-center gap-5 text-gray-700">
           <i className="fa-solid mt-1 fa-trophy text-[20px]"></i> 
           {user.skills ? 
             (Array.isArray(user.skills) 
@@ -44,7 +48,7 @@ export default function UserProfile() {
             )
             : '-------'}
         </p>
-        <p className="flex items-start gap-5 text-gray-700">
+        <p className="flex items-center gap-5 text-gray-700">
           <i className="fa-solid fa-briefcase text-[24px]"></i> 
           {user.job_preference ? 
             (Array.isArray(user.job_preference) 
@@ -54,7 +58,7 @@ export default function UserProfile() {
             : '-------'}
         </p>
 
-        <p className="flex items-start gap-5 text-gray-700">
+        <p className="flex items-center gap-5 text-gray-700">
           <i className="fa-brands fa-linkedin text-[24px]"></i> 
           {user.linkedin ? (
             <Link
@@ -72,7 +76,7 @@ export default function UserProfile() {
           )}
         </p>
 
-        <p className="flex items-start gap-5 text-gray-700">
+        <p className="flex items-center gap-5 text-gray-700">
           <i className="fa-brands fa-github text-[24px]"></i> 
           {user.github ? (
             <Link
@@ -90,7 +94,7 @@ export default function UserProfile() {
           )}
         </p>
 
-        <p className="flex items-start gap-5 text-gray-700">
+        <p className="flex items-center gap-5 text-gray-700">
           <i className="fa-brands fa-chrome text-[24px]"></i> 
           {user.portfolio ? (
             <Link
@@ -109,7 +113,7 @@ export default function UserProfile() {
         </p>
 
         <div className=" flex gap-3">
-          <p className="flex items-start gap-5 text-gray-700">
+          <p className="flex items-center gap-5 text-gray-700">
             <i className="fa-solid fa-file text-[24px]"></i> 
             {user.cv ? (
             <Link

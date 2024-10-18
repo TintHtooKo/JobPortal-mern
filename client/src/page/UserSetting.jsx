@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react'
 import { AuthContext } from '../context/AuthContext'
 import { Link, useNavigate } from 'react-router-dom'
 import axios from '../helper/axios'
+import { ToastContainer, toast } from 'react-toastify'
 
 export default function UserSetting() {
   let { user,dispatch } = useContext(AuthContext)
@@ -26,6 +27,13 @@ export default function UserSetting() {
         }
     } catch (error) {
         console.log(error)
+        toast.error(error.response.data.message,{
+            position: 'top-right',
+            autoClose: 4000,
+            pauseOnHover: true,
+            draggable: true,
+            theme: 'dark'
+        })
     }
   }
 
@@ -106,6 +114,7 @@ export default function UserSetting() {
           </div>
         </div>
       )}
+      <ToastContainer />
     </>
   )
 }

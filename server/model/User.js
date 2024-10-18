@@ -51,6 +51,18 @@ const UserSchema = new Schema({
         type : String,
         default : null
     },
+    city : {
+        type : String,
+        default : null
+    },
+    state : {
+        type : String,
+        default : null
+    },
+    country : {
+        type : String,
+        default : null
+    },
     degree : {
         type : String,
         default : null
