@@ -27,9 +27,11 @@ export default function EditResume() {
                 }
             })
             if(uploadRes.status === 200) {
+                
                 setLoading(false)
                 dispatch({type:'UPDATE_PROFILE',payload:{cv:file}})
                 navigate('/user/profile')
+                window.location.reload()
             }
         } catch (error) {
             console.log(error)

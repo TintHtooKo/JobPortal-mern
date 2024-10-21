@@ -7,7 +7,7 @@ const AuthMiddleware = (req,res,next) =>{
             if(err){
                 return res.status(401).json({msg:'Unauthenticate'})
             }else{
-                let user = await User.findById(decodedValue._id).populate('role').populate('position')             
+                let user = await User.findById(decodedValue._id).populate('role').populate('position').populate({path:'experience',model:'Experience'})           
                 req.user = user
                 next()
             }

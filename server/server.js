@@ -4,6 +4,7 @@ const cors = require('cors')
 require('dotenv').config()
 const UserRoute = require('./route/UserRoute')
 const PositionRoute = require('./route/PositionRoute')
+const ExperienceRoute = require('./route/ExperienceRoute')
 const RoleRoute = require('./route/RoleRoute')
 const cookieParser = require('cookie-parser')
 const app = express()
@@ -29,5 +30,6 @@ app.get('',(req,res)=>{
 app.use('/user',UserRoute)
 app.use('/position',PositionRoute)
 app.use('/role',RoleRoute)
+app.use('/exp',ExperienceRoute)
 
 

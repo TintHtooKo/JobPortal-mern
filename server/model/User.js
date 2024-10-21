@@ -71,11 +71,11 @@ const UserSchema = new Schema({
         type : Array,
         default : null
     },
-    experience : {
+    experience : [{
         type : Schema.Types.ObjectId,
         ref : 'Experience',
         default : null
-    },
+    }],
     linkedin : {
         type : String,
         default : null

@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt')
 const createToken = require('../token/createToken')
 const removeFile = require('../helper/removeFile')
 const mongoose = require('mongoose')
+const Experience = require('../model/Experience')
 
 
 
@@ -33,7 +34,7 @@ const userController = {
 
             let user = await User.create({fullname,email,phone,password:hashPassword,role,position})
             let token = createToken(user._id)
-            user = await User.findById(user._id).populate('role').populate('position');
+            user = await User.findById(user._id).populate('role').populate('position').populate({path:'experience',model:'Experience'});
             let maxAge =  24 * 60 * 60
             res.cookie('jwt',token,{httpOnly : true, maxAge:maxAge * 1000})
             return res.status(200).json({user,token})
@@ -55,7 +56,7 @@ const userController = {
                 return res.status(400).json({message : 'Password does not match'})
             }
             let token = createToken(user._id)
-            user = await User.findById(user._id).populate('role').populate('position');
+            user = await User.findById(user._id).populate('role').populate('position').populate({path:'experience',model:'Experience'});
             let maxAge =  24 * 60 * 60
             res.cookie('jwt',token,{httpOnly : true, maxAge:maxAge * 1000})
             return res.status(200).json({user,token})
@@ -79,7 +80,7 @@ const userController = {
             if(currentUser.role.role !== 'Admin' && currentUser.role.role !== 'Super Admin'){
                 return res.status(401).json({message : 'You don\'t have permission'})               
             }
-            let user = await User.find().populate('role').populate('position')
+            let user = await User.find().populate('role').populate('position').populate({path:'experience',model:'Experience'})
             return res.status(200).json({user})
         } catch (error) {
             return res.status(500).json({message : error.message})
@@ -94,7 +95,7 @@ const userController = {
                                 {
                                     fullname,phone,role,position,skills,degree,address,linkedin,
                                     github,portfolio,job_preference,bio,about,country,state,city
-                                },{new : true}).populate('role').populate('position')
+                                },{new : true}).populate('role').populate('position').populate({path:'experience',model:'Experience'})
             return res.status(200).json({message:"Edit User Success"})
         } catch (error) {
             return res.status(500).json({message : error.message})

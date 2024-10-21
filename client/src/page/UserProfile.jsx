@@ -1,10 +1,15 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { AuthContext } from '../context/AuthContext'
 import User from '../assets/user.png'
 import { Link } from 'react-router-dom'
 
 export default function UserProfile() {
   let {user} = useContext(AuthContext)
+  let [exp,setExp] = useState(user.experience)
+
+  
+
+  console.log(user.experience)
   return (
     <>
       <div className="mt-10 flex flex-col items-center">
@@ -27,7 +32,7 @@ export default function UserProfile() {
           <i className="fa-solid fa-envelope text-[20px]"></i> {user.email}
         </p>
         <p className="flex items-center gap-5 text-gray-700">
-          <i className="fa-solid fa-phone text-[20px]"></i> +{user.phone}
+          <i className="fa-solid fa-phone text-[20px]"></i> {user.phone}
         </p>
         <p className="flex items-center gap-5 text-gray-700">
           <i className="fa-solid fa-location-dot text-[20px]"></i> 
@@ -119,9 +124,9 @@ export default function UserProfile() {
             <Link
             onClick={(e) => {
               e.preventDefault();
-              window.open(import.meta.env.VITE_BACKEND_URL_ACCESS + '/cv' + user.cv, '_blank', 'noopener,noreferrer');
+              window.open(import.meta.env.VITE_BACKEND_URL_ACCESS + '/cv/' + user.cv, '_blank', 'noopener,noreferrer');
             }} 
-            to={import.meta.env.VITE_BACKEND_URL_ACCESS + '/cv' + user.cv} className='text-blue-500 ms-[7px] hover:text-blue-600'>
+            to={import.meta.env.VITE_BACKEND_URL_ACCESS + '/cv/' + user.cv} className='text-blue-500 ms-[7px] hover:text-blue-600'>
               Resume
             </Link>
           ) : (
@@ -137,9 +142,38 @@ export default function UserProfile() {
       </div>
       {/* Profile end */}
       <hr className="w-full my-10" />
+
+
+
       {/* Experience start */}
       <div className=" w-full px-4 md:px-10 lg:px-20">
       <p className="text-gray-700 font-semibold text-[25px]"> Experience </p>
+      <div className="">
+        {
+          user.experience.map((exp,index)=>(
+            <>
+            <div className="" key={index}>
+              <p>{exp.company}</p>
+              <p>
+                {new Date(exp.start_date).toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
+                })} - 
+                {new Date(exp.end_date).toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
+                })}
+              </p>
+              <p>{exp.position}</p>
+            </div>
+            <br />
+            </>
+            
+          ))
+        }
+      </div>
       </div>
       {/* Experience end */}
 
