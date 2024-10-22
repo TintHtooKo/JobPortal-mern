@@ -116,11 +116,20 @@ export default function EditUserProfile() {
                     theme: "dark",
                     })
                 setLoading(false)
+                }else if (linkedin && !linkedin.startsWith('https://') || github && !github.startsWith('https://') || portfolio && !portfolio.startsWith('https://')) {
+                    setLoading(false);
+                    toast.error('Link must start with "https://"', {
+                        position: 'top-right',
+                        autoClose: 4000,
+                        pauseOnHover: true,
+                        draggable: true,
+                        theme: 'dark',
+                    });
                 }else{
                     let data = {
                                 fullname,bio,about,address,degree,linkedin,
                                 github,portfolio,job_preference:jobPreference,phone,skills,
-                                country:selectedCountry.label, state:selectedState.label, city:selectedCity.label
+                                country:selectedCountry?.label, state:selectedState?.label, city:selectedCity?.label
                                 }
                     // console.log(data)
                     let editProfile = await axios.patch('user/edit',data)
@@ -132,7 +141,7 @@ export default function EditUserProfile() {
                             payload : {
                                 fullname,bio,about,address,degree,linkedin,
                                 github,portfolio,job_preference:jobPreference,phone,skills,
-                                country:selectedCountry.label, state:selectedState.label, city:selectedCity.label
+                                country:selectedCountry?.label, state:selectedState?.label, city:selectedCity?.label
                             }
                         })
                         navigate('/user/profile')
@@ -143,7 +152,7 @@ export default function EditUserProfile() {
         } catch (error) {
             setLoading(false)
             console.log(error)
-            toast.error(error.response.data.message,{
+            toast.error(error?.response?.data.message,{
                 position: "top-right",
                 autoClose: 5000,
                 closeOnClick: true,
@@ -161,8 +170,9 @@ export default function EditUserProfile() {
       
       
   return (
-    <>
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+    <div className=' min-h-screen bg-gray-100'>
+          <Link to={'/user/profile'} className=" ms-5"><i className='fa-solid fa-arrow-circle-left text-[30px] mt-3'></i></Link>
+    <div className="flex items-center justify-center">
         <div className="w-full my-10 max-w-md p-8 bg-white rounded-lg shadow-md">
             <h1 className="text-2xl font-bold text-center bg-white mb-6">Edit Profile</h1>
             <form action="" onSubmit={handleSubmit} className="bg-white">
@@ -392,6 +402,6 @@ export default function EditUserProfile() {
     </div>
 
     <ToastContainer />
-    </>
+    </div>
   )
 }

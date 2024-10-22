@@ -24,7 +24,7 @@
         },
         end_date : {
             type : Date,
-            required : true
+            default : null
         },
         responsibilities : {
             type : String,

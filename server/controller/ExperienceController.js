@@ -5,7 +5,8 @@ const User = require('../model/User')
 const ExperienceController = {
     index : async(req,res) => {
         try {
-                let exp = await Experience.find().populate({path : 'user',select : 'id fullname email'})
+            let currentUser = req.user._id
+            let exp = await Experience.find({user:currentUser}).populate({path : 'user',select : 'id fullname email'}).sort({createdAt : -1})
             return res.status(200).json(exp)
         } catch (error) {
             return res.status(500).json({message : error.message})

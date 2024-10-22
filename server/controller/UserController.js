@@ -34,7 +34,14 @@ const userController = {
 
             let user = await User.create({fullname,email,phone,password:hashPassword,role,position})
             let token = createToken(user._id)
-            user = await User.findById(user._id).populate('role').populate('position').populate({path:'experience',model:'Experience'});
+            user = await User.findById(user._id)
+            .populate('role')
+            .populate('position')
+            .populate({
+            path: 'experience',
+            model: 'Experience',
+            options: { sort: { createdAt: -1 } }
+            });
             let maxAge =  24 * 60 * 60
             res.cookie('jwt',token,{httpOnly : true, maxAge:maxAge * 1000})
             return res.status(200).json({user,token})
@@ -56,7 +63,15 @@ const userController = {
                 return res.status(400).json({message : 'Password does not match'})
             }
             let token = createToken(user._id)
-            user = await User.findById(user._id).populate('role').populate('position').populate({path:'experience',model:'Experience'});
+            user = await User.findById(user._id)
+            .populate('role')
+            .populate('position')
+            .populate({
+            path: 'experience',
+            model: 'Experience',
+            options: { sort: { createdAt: -1 } }
+            });
+
             let maxAge =  24 * 60 * 60
             res.cookie('jwt',token,{httpOnly : true, maxAge:maxAge * 1000})
             return res.status(200).json({user,token})

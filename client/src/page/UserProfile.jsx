@@ -2,28 +2,55 @@ import React, { useContext, useEffect, useState } from 'react'
 import { AuthContext } from '../context/AuthContext'
 import User from '../assets/user.png'
 import { Link } from 'react-router-dom'
+import { ToastContainer, toast } from 'react-toastify'
+import axios from '../helper/axios'
 
 export default function UserProfile() {
   let {user} = useContext(AuthContext)
-  let [exp,setExp] = useState(user.experience)
+  // let [exp,setExp] = useState(user.experience)
+  let [exp,setExp] = useState([])
+  console.log(user.github,user.linkedin)
 
+  useEffect(()=>{
+    let fetchExp = async()=>{
+      let res = await axios.get(`/exp/${user._id}`)
+      setExp(res.data) 
+    }
+    fetchExp()
+  },[])
   
+  let handleDeleteClick = async(id) => {
+    try {
+      let delExp = await axios.delete(`/exp/delete/${id}`)
+      if (delExp.status === 200) {
+        setExp((prevExp) =>
+          prevExp.filter((exp) => exp._id !== id)
+        );
+        toast.success('Experience deleted successfully', {
+          position: 'top-right',
+          autoClose: 4000,
+          pauseOnHover: true,
+          draggable: true,
+          theme: 'dark'
+        })
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
-  console.log(user.experience)
   return (
     <>
-      <div className="mt-10 flex flex-col items-center">
+      <div className="mt-10 flex flex-col lg:flex-row items-start gap-10 px-4 md:px-10 lg:px-20 ">
 
       {/* Profile start */}
       <div className="w-full px-4 md:px-10 lg:px-20">
       <div className="flex flex-col-reverse items-start gap-10 sm:flex-row sm:gap-10 lg:gap-60 w-full">
         <div className="flex flex-col gap-3 w-full sm:w-auto">
-          <p className='font-semibold text-2xl sm:text-3xl'>{user.fullname}</p>
+          <p className='font-semibold text-3xl sm:text-4xl'>Profile Detail</p>
+          <p className=' text-2xl sm:text-3xl'>{user.fullname}</p>
           <p className='text-gray-500 w-full sm:w-[400px]'>{user.bio ? user.bio : 'Bio'}</p>
           <p className='text-gray-500 w-full sm:w-[400px]'>{user.about ? user.about : 'About Me'}</p>
-        </div>
-        <div className="flex justify-center sm:justify-start">
-          <img src={User} className="w-full sm:w-[150px] rounded-full" alt="User" />
         </div>
       </div>
 
@@ -66,16 +93,17 @@ export default function UserProfile() {
         <p className="flex items-center gap-5 text-gray-700">
           <i className="fa-brands fa-linkedin text-[24px]"></i> 
           {user.linkedin ? (
-            <Link
-              onClick={(e) => {
-                e.preventDefault();
-                window.open(user.linkedin, '_blank', 'noopener,noreferrer');
-              }}
-              to={user.linkedin} 
-              className="text-blue-500 hover:text-blue-600"
-            >
-              LinkedIn
-            </Link>
+            <a
+            onClick={(e) => {
+              e.preventDefault();
+              window.open(user.linkedin, '_blank', 'noopener,noreferrer');
+            }}
+            href={user.linkedin} // Optional: this can be the actual URL if needed for SEO
+            className="text-blue-500 cursor-pointer hover:text-blue-600"
+          >
+            LinkedIn
+          </a>
+          
           ) : (
             <span className="text-gray-700">-------</span>
           )}
@@ -84,16 +112,16 @@ export default function UserProfile() {
         <p className="flex items-center gap-5 text-gray-700">
           <i className="fa-brands fa-github text-[24px]"></i> 
           {user.github ? (
-            <Link
+            <a
               onClick={(e) => {
                 e.preventDefault();
                 window.open(user.github, '_blank', 'noopener,noreferrer');
               }}
-              to={user.github} 
-              className="text-blue-500 hover:text-blue-600"
+              href={user.github} 
+              className="text-blue-500 cursor-pointer hover:text-blue-600"
             >
               Github
-            </Link>
+            </a>
           ) : (
             <span className="text-gray-700">-------</span>
           )}
@@ -102,16 +130,16 @@ export default function UserProfile() {
         <p className="flex items-center gap-5 text-gray-700">
           <i className="fa-brands fa-chrome text-[24px]"></i> 
           {user.portfolio ? (
-            <Link
+            <a
               onClick={(e) => {
                 e.preventDefault();
                 window.open(user.portfolio, '_blank', 'noopener,noreferrer');
               }}
-              to={user.portfolio} 
-              className="text-blue-500 hover:text-blue-600"
+              href={user.portfolio} 
+              className="text-blue-500 cursor-pointer hover:text-blue-600"
             >
               Personal Website
-            </Link>
+            </a>
           ) : (
             <span className="text-gray-700">-------</span>
           )}
@@ -141,33 +169,58 @@ export default function UserProfile() {
       </div>       
       </div>
       {/* Profile end */}
-      <hr className="w-full my-10" />
+      {/* <hr className="w-full my-10" /> */}
 
 
 
       {/* Experience start */}
       <div className=" w-full px-4 md:px-10 lg:px-20">
-      <p className="text-gray-700 font-semibold text-[25px]"> Experience </p>
-      <div className="">
+      <p className='font-semibold text-3xl sm:text-4xl'>Experience</p>
+      <Link to={'/user/exp/add'}><i className='fa-solid fa-plus mt-5 bg-blue-500 p-[5px] rounded text-white'></i></Link>
+      <div className=" mt-5 cursor-pointer">
         {
-          user.experience.map((exp,index)=>(
+          exp.map((exp)=>(
             <>
-            <div className="" key={index}>
-              <p>{exp.company}</p>
-              <p>
+            <div className=" flex flex-col gap-2" key={exp._id}>
+              <p className=' font-semibold text-xl'>{exp.company}</p>
+              {
+                exp.company_url && (
+                  <a
+                  onClick={(e) => {
+                  e.preventDefault();
+                  window.open(exp.company_url, '_blank', 'noopener,noreferrer');
+                }}
+                href={exp.company_url} 
+                className="text-blue-500 cursor-pointer text-[13px] underline hover:text-blue-600"
+              >
+                Company Website
+              </a>
+                )
+              }
+              <p className=' text-sm text-gray-500'>
                 {new Date(exp.start_date).toLocaleDateString('en-US', {
                   year: 'numeric',
                   month: 'long',
                   day: 'numeric'
-                })} - 
-                {new Date(exp.end_date).toLocaleDateString('en-US', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric'
-                })}
+                })} - {' '}
+                {
+                  exp.end_date ?( 
+                    new Date(exp.end_date).toLocaleDateString('en-US', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric'
+                    })
+                  ): ('Present')
+                }
               </p>
               <p>{exp.position}</p>
+              <div className=" flex gap-5">
+                <Link className='text-blue-500 hover:text-blue-600'><i className='fa-solid fa-eye'></i></Link>
+                <button onClick={()=>handleDeleteClick(exp._id)} className='text-red-500 hover:text-red-600'><i className='fa-solid fa-trash'></i></button>
+              </div>
             </div>
+            <br />
+            <hr />
             <br />
             </>
             
@@ -178,7 +231,7 @@ export default function UserProfile() {
       {/* Experience end */}
 
       </div>
-
+      <ToastContainer/>
 
     </>
   )
