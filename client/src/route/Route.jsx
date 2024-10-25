@@ -15,6 +15,7 @@ import UserSetting from '../page/UserSetting'
 import ChangeEmail from '../components/userComponent/settings/ChangeEmail'
 import ChangePassword from '../components/userComponent/settings/ChangePassword'
 import AddEditExp from '../components/userComponent/exp/AddEditExp'
+import ExpDetail from '../components/userComponent/exp/ExpDetail'
 
 export default function Route() {
     let {user} = useContext(AuthContext)
@@ -67,6 +68,14 @@ export default function Route() {
                 {
                     path : '/user/exp/add',
                     element : (user && JobSeeker) ? <AddEditExp/> : <Login/>
+                },
+                {
+                    path : '/user/exp/edit/:id',
+                    element : (user && JobSeeker) ? <AddEditExp/> : <Login/>
+                },
+                {
+                    path : '/user/exp/detail/:id',
+                    element : (user && JobSeeker) ? <ExpDetail/> : <Login/>  
                 },
                 {
                     path : '/employee',

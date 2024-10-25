@@ -215,7 +215,8 @@ export default function UserProfile() {
               </p>
               <p>{exp.position}</p>
               <div className=" flex gap-5">
-                <Link className='text-blue-500 hover:text-blue-600'><i className='fa-solid fa-eye'></i></Link>
+                <Link to={`/user/exp/detail/${exp._id}`} className='text-blue-500 hover:text-blue-600'><i className='fa-solid fa-eye'></i></Link>
+                <Link to={`/user/exp/edit/${exp._id}`} className='text-blue-500 hover:text-blue-600'><i className='fa-solid fa-pen'></i></Link>
                 <button onClick={()=>handleDeleteClick(exp._id)} className='text-red-500 hover:text-red-600'><i className='fa-solid fa-trash'></i></button>
               </div>
             </div>

@@ -1,8 +1,8 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import ButtonSpinner from '../../../assets/button-spinner.svg'
 import { ToastContainer, toast } from 'react-toastify';
 import axios from '../../../helper/axios';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 
 
 export default function AddEditExp() {
@@ -15,6 +15,21 @@ export default function AddEditExp() {
     let [responsibilities,setResponsibilities] = useState('')
     let [isPresent, setIsPresent] = useState(false);
     let navigate = useNavigate()
+    let {id} = useParams()
+
+    useEffect(()=>{
+        let fetchExp = async()=>{
+            let res = await axios.get('/exp/detail/'+id)
+            setCompany(res.data.company)
+            setCompanyLink(res.data.company_url)
+            setPosition(res.data.position)
+            setStart(new Date(res.data.start_date).toISOString().slice(0, 10));
+            setEnd(isPresent ? '' : new Date(res.data.end_date).toISOString().slice(0, 10));
+            setResponsibilities(res.data.responsibilities)
+            setIsPresent(!res.data.end_date);
+        }
+        fetchExp()
+    },[id])
 
     let handleSubmit = async(e) => {
         e.preventDefault()
@@ -41,16 +56,25 @@ export default function AddEditExp() {
                 });
             }else{
                 let data = {position,company,company_url:companyLink,start_date:start,end_date:end,responsibilities}
-                let res = await axios.post('/exp/create',data)
+                let res;
+                if(id){
+                    res = await axios.patch('/exp/update/'+id,data)
+                }else{
+                    res = await axios.post('/exp/create',data)
+                }
+                
                 if(res.status === 200) {
                     setLoading(false)
-                    toast.success('Experience added successfully', {
+                    toast.success(id ? 'Experience updated successfully' : 'Experience added successfully', {
                         position: 'top-right',
                         autoClose: 4000,
                         pauseOnHover: true,
                         draggable: true,
                         theme: 'dark'
                     })
+                    if(id){
+                        navigate('/user/profile')
+                    }
                     setPosition('')
                     setCompany('')
                     setCompanyLink('')
@@ -159,7 +183,7 @@ export default function AddEditExp() {
                 type="submit" 
                 className="w-full flex items-center justify-center gap-5 bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition"
                 >
-                {loading && <img src={ButtonSpinner} className=' bg-transparent'  alt="" />} Add
+                {loading && <img src={ButtonSpinner} className=' bg-transparent'  alt="" />} {id ? 'Edit Experience' : 'Add Experience'}  
                 </button>
             </div>
         </form>
