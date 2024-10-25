@@ -4,6 +4,7 @@ import { Outlet, useLocation, useNavigation } from 'react-router-dom'
 import Spinner from './assets/screen-spinner.svg'
 import UserNav from './components/userComponent/nav/UserNav'
 import { AuthContext } from './context/AuthContext'
+import EmployeeNav from './components/employeeComponent/nav/EmployeeNav'
 
 
 export default function App() {
@@ -52,7 +53,11 @@ export default function App() {
   return (
     <>
       {
-        user && JobSeeker && <UserNav/>
+        user && JobSeeker &&  <UserNav/>
+      }
+
+      {
+        user && Employee &&  <EmployeeNav/>
       }
 
           <div className="">
